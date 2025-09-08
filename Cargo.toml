@@ -8,3 +8,4 @@ repository = "https://github.com/wainggan/lykoi_data"
 license = "MIT"
 
 [dependencies]
+num = "0.4.3"
