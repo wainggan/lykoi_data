@@ -3,4 +3,5 @@
 pub mod dag;
 pub mod lay;
 pub mod point;
+pub mod rng;
 
