@@ -2,6 +2,16 @@
 [Wichmann-Hill](https://en.wikipedia.org/wiki/Wichmann%E2%80%93Hill) psuedo-rng.
 */
 
+
+fn util_gen_time() -> u64 {
+	std::time::SystemTime::now()
+		.duration_since(std::time::UNIX_EPOCH)
+		.unwrap_or(std::time::Duration::from_millis(0x6969696969696969))
+		.as_millis()
+		.wrapping_pow(7)
+		.wrapping_pow(5) as u64
+}
+
 pub struct WichHill {
 	seed0: u32,
 	seed1: u32,
@@ -21,13 +31,7 @@ impl WichHill {
 	}
 
 	pub fn new_time() -> Self {
-		let a = std::time::SystemTime::now()
-			.duration_since(std::time::UNIX_EPOCH)
-			.unwrap_or(std::time::Duration::from_millis(0x6969696969696969))
-			.as_millis()
-			.wrapping_pow(7)
-			.wrapping_pow(5) as u32;
-		WichHill::new(a)
+		WichHill::new(util_gen_time() as _)
 	}
 
 	pub fn next(&mut self) -> f64 {
@@ -55,13 +59,7 @@ impl XorShift64 {
 	}
 	
 	pub fn new_time() -> Self {
-		let a = std::time::SystemTime::now()
-			.duration_since(std::time::UNIX_EPOCH)
-			.unwrap_or(std::time::Duration::from_millis(0x6969696969696969))
-			.as_millis()
-			.wrapping_pow(7)
-			.wrapping_pow(5) as u64;
-		Self(a)
+		Self(util_gen_time() as _)
 	}
 
 	pub fn next(&mut self) -> f64 {
