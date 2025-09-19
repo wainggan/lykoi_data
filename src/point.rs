@@ -50,7 +50,7 @@ where T: Copy + Debug {
 }
 
 impl<T, const N: usize> Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	pub fn add(self, other: Point<T, N>) -> Self {
 		self.binary(other, |x, y| x + y)
 	}
@@ -77,7 +77,7 @@ where T: Copy + Debug + num::Num {
 }
 
 impl<T> Point<T, 3>
-where T: Copy + Debug + num::Float {
+where T: Copy + Debug + num_traits::Float {
 	pub fn mag(self) -> T {
 		(self * self)
 			.unwrap()
@@ -89,7 +89,7 @@ where T: Copy + Debug + num::Float {
 }
 
 impl<T> Point<T, 3>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	pub fn cross(self, other: Point<T, 3>) -> Self {
 		let lhs = self.unwrap();
 		let rhs = other.unwrap();
@@ -102,70 +102,70 @@ where T: Copy + Debug + num::Num {
 }
 
 impl<T, const N: usize> std::ops::Add for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	type Output = Point<T, N>;
 	fn add(self, rhs: Self) -> Self::Output {
 		Point::add(self, rhs)
 	}
 }
 impl<T, const N: usize> std::ops::AddAssign for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	fn add_assign(&mut self, rhs: Self) {
 		*self = Point::add(*self, rhs)
 	}
 }
 
 impl<T, const N: usize> std::ops::Sub for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	type Output = Point<T, N>;
 	fn sub(self, rhs: Self) -> Self::Output {
 		Point::sub(self, rhs)
 	}
 }
 impl<T, const N: usize> std::ops::SubAssign for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	fn sub_assign(&mut self, rhs: Self) {
 		*self = Point::sub(*self, rhs)
 	}
 }
 
 impl<T, const N: usize> std::ops::Mul for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	type Output = Point<T, N>;
 	fn mul(self, rhs: Self) -> Self::Output {
 		Point::mul(self, rhs)
 	}
 }
 impl<T, const N: usize> std::ops::MulAssign for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	fn mul_assign(&mut self, rhs: Self) {
 		*self = Point::mul(*self, rhs)
 	}
 }
 
 impl<T, const N: usize> std::ops::Div for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	type Output = Point<T, N>;
 	fn div(self, rhs: Self) -> Self::Output {
 		Point::div(self, rhs)
 	}
 }
 impl<T, const N: usize> std::ops::DivAssign for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	fn div_assign(&mut self, rhs: Self) {
 		*self = Point::div(*self, rhs)
 	}
 }
 
 impl<T, const N: usize> std::ops::Rem for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	type Output = Point<T, N>;
 	fn rem(self, rhs: Self) -> Self::Output {
 		Point::rem(self, rhs)
 	}
 }
 impl<T, const N: usize> std::ops::RemAssign for Point<T, N>
-where T: Copy + Debug + num::Num {
+where T: Copy + Debug + num_traits::Num {
 	fn rem_assign(&mut self, rhs: Self) {
 		*self = Point::rem(*self, rhs)
 	}

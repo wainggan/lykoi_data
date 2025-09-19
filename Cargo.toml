@@ -1,6 +1,6 @@
 [package]
 name = "lykoi_data"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 authors = ["parchii"]
 description = "data"
@@ -8,4 +8,4 @@ repository = "https://github.com/wainggan/lykoi_data"
 license = "MIT"
 
 [dependencies]
-num = "0.4.3"
+num-traits = "0.2.19"
