@@ -1,7 +1,15 @@
 /*!
-[Wichmann-Hill](https://en.wikipedia.org/wiki/Wichmann%E2%80%93Hill) psuedo-rng.
+this module exposes some psuedo-rng implementations.
+
+- [WichHill]
+- [XorShift32]
+- [XorShift64]
+- [XorShift128p]
 */
 
+/**
+[Wichmann-Hill](https://en.wikipedia.org/wiki/Wichmann%E2%80%93Hill) psuedo-rng.
+*/
 pub struct WichHill {
 	seed0: u32,
 	seed1: u32,
@@ -42,6 +50,9 @@ impl WichHill {
 	}
 }
 
+/**
+[32bit xorshift](https://en.wikipedia.org/wiki/Xorshift) psuedo-rng.
+*/
 pub struct XorShift32(u32);
 impl XorShift32 {
 	#[inline]
@@ -70,6 +81,9 @@ impl XorShift32 {
 	}
 }
 
+/**
+[64bit xorshift](https://en.wikipedia.org/wiki/Xorshift) psuedo-rng.
+*/
 pub struct XorShift64(u64);
 impl XorShift64 {
 	#[inline]
@@ -97,4 +111,79 @@ impl XorShift64 {
 		x0 + self.nextf() * (x1 - x0)
 	}
 }
+
+/**
+[128bit non-linear xorshift](https://en.wikipedia.org/wiki/Xorshift#xorshift+) psuedo-rng. yields u64 values.
+*/
+pub struct XorShift128p(u64, u64);
+impl XorShift128p {
+	#[inline]
+	pub const fn new_raw(seed0: u64, seed1: u64) -> Self {
+		Self(seed0, seed1)
+	}
+
+	#[inline]
+	pub const fn new(seed: u64) -> Self {
+		let mut rng = XorShift64::new(seed);
+		Self::new_raw(rng.nextu(), rng.nextu())
+	}
+
+	#[inline]
+	pub const fn nextu(&mut self) -> u64 {
+		let mut t: u64 = self.0;
+		let s: u64 = self.1;
+		self.0 = s;
+		t ^= t << 23;
+		t ^= t >> 18;
+		t ^= s ^ (s >> 5);
+		self.1 = t;
+		t + s
+	}
+
+	#[inline]
+	pub const fn nextf(&mut self) -> f64 {
+		self.nextu() as f64 / u64::MAX as f64
+	}
+
+	#[inline]
+	pub const fn range(&mut self, x0: f64, x1: f64) -> f64 {
+		x0 + self.nextf() * (x1 - x0)
+	}
+}
+
+/**
+[16bit fibonacci linear-feedback shift register](https://en.wikipedia.org/wiki/Linear-feedback_shift_register#Fibonacci_LFSRs) psuedo-rng.
+*/
+pub struct FibLSFR16(u16, u16);
+impl FibLSFR16 {
+	#[inline]
+	pub const fn new_raw(seed0: u16, seed1: u16) -> Self {
+		Self(seed0, seed1)
+	}
+
+	#[inline]
+	pub const fn new(seed: u32) -> Self {
+		let s = seed.to_be_bytes();
+		Self::new_raw(u16::from_be_bytes([s[0], s[1]]), u16::from_be_bytes([s[2], s[3]]))
+	}
+	
+	#[inline]
+	pub const fn nextu(&mut self) -> u16 {
+		self.0 = ((self.1 >> 0) ^ (self.1 >> 2) ^ (self.1 >> 3) ^ (self.1 >> 5)) & 1;
+        self.1 = (self.1 >> 1) | (self.0 << 15);
+		self.1
+	}
+
+	#[inline]
+	pub const fn nextf(&mut self) -> f64 {
+		self.nextu() as f64 / u16::MAX as f64
+	}
+
+	#[inline]
+	pub const fn range(&mut self, x0: f64, x1: f64) -> f64 {
+		x0 + self.nextf() * (x1 - x0)
+	}
+}
+
+
 
