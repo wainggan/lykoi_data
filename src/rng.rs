@@ -11,6 +11,7 @@ this module exposes some psuedo-rng implementations.
 /**
 [Wichmann-Hill](https://en.wikipedia.org/wiki/Wichmann%E2%80%93Hill) psuedo-rng.
 */
+#[derive(Debug, Clone)]
 pub struct WichHill {
 	seed0: u32,
 	seed1: u32,
@@ -54,6 +55,7 @@ impl WichHill {
 /**
 [32bit xorshift](https://en.wikipedia.org/wiki/Xorshift) psuedo-rng.
 */
+#[derive(Debug, Clone)]
 pub struct XorShift32(u32);
 impl XorShift32 {
 	#[inline]
@@ -85,6 +87,7 @@ impl XorShift32 {
 /**
 [64bit xorshift](https://en.wikipedia.org/wiki/Xorshift) psuedo-rng.
 */
+#[derive(Debug, Clone)]
 pub struct XorShift64(u64);
 impl XorShift64 {
 	#[inline]
@@ -116,6 +119,7 @@ impl XorShift64 {
 /**
 [128bit non-linear xorshift](https://en.wikipedia.org/wiki/Xorshift#xorshift+) psuedo-rng. yields u64 values.
 */
+#[derive(Debug, Clone)]
 pub struct XorShift128p(u64, u64);
 impl XorShift128p {
 	#[inline]
@@ -155,6 +159,7 @@ impl XorShift128p {
 /**
 [16bit fibonacci linear-feedback shift register](https://en.wikipedia.org/wiki/Linear-feedback_shift_register#Fibonacci_LFSRs) psuedo-rng.
 */
+#[derive(Debug, Clone)]
 pub struct FibLFSR16(u16, u16);
 impl FibLFSR16 {
 	#[inline]
