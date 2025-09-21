@@ -5,6 +5,7 @@ this module exposes some psuedo-rng implementations.
 - [XorShift32]
 - [XorShift64]
 - [XorShift128p]
+- [FibLFSR16]
 */
 
 /**
@@ -154,8 +155,8 @@ impl XorShift128p {
 /**
 [16bit fibonacci linear-feedback shift register](https://en.wikipedia.org/wiki/Linear-feedback_shift_register#Fibonacci_LFSRs) psuedo-rng.
 */
-pub struct FibLSFR16(u16, u16);
-impl FibLSFR16 {
+pub struct FibLFSR16(u16, u16);
+impl FibLFSR16 {
 	#[inline]
 	pub const fn new_raw(seed0: u16, seed1: u16) -> Self {
 		Self(seed0, seed1)
