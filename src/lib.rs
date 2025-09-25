@@ -6,4 +6,8 @@ pub mod dag;
 pub mod point;
 #[cfg(feature = "rng")]
 pub mod rng;
+#[cfg(feature = "math")]
+pub mod math;
+#[cfg(feature = "color")]
+pub mod color;
 
