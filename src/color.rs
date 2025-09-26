@@ -31,6 +31,91 @@ impl Color {
 		}
 	}
 
+	pub fn from_hex_str(hex: &str) -> Option<Self> {
+		let hex = hex.trim_start_matches("#");
+		match hex.len() {
+			3 => {
+				let (r, hex) = hex.split_at(1);
+				let (g, b) = hex.split_at(1);
+				let Ok(r)= u8::from_str_radix(r, 16) else {
+					return None;
+				};
+				let Ok(g)= u8::from_str_radix(g, 16) else {
+					return None;
+				};
+				let Ok(b)= u8::from_str_radix(b, 16) else {
+					return None;
+				};
+				let r = r as f32 * 17.0 / 255.0;
+				let g = g as f32 * 17.0 / 255.0;
+				let b = b as f32 * 17.0 / 255.0;
+				Some(Self::new_rgb(r, g, b))
+			},
+			4 => {
+				let (r, hex) = hex.split_at(1);
+				let (g, hex) = hex.split_at(1);
+				let (b, a) = hex.split_at(1);
+				let Ok(r)= u8::from_str_radix(r, 16) else {
+					return None;
+				};
+				let Ok(g)= u8::from_str_radix(g, 16) else {
+					return None;
+				};
+				let Ok(b)= u8::from_str_radix(b, 16) else {
+					return None;
+				};
+				let Ok(a)= u8::from_str_radix(a, 16) else {
+					return None;
+				};
+				let r = r as f32 * 17.0 / 255.0;
+				let g = g as f32 * 17.0 / 255.0;
+				let b = b as f32 * 17.0 / 255.0;
+				let _ = a as f32 * 17.0 / 255.0;
+				Some(Self::new_rgb(r, g, b))
+			},
+			6 => {
+				let (r, hex) = hex.split_at(2);
+				let (g, b) = hex.split_at(2);
+				let Ok(r)= u8::from_str_radix(r, 16) else {
+					return None;
+				};
+				let Ok(g)= u8::from_str_radix(g, 16) else {
+					return None;
+				};
+				let Ok(b)= u8::from_str_radix(b, 16) else {
+					return None;
+				};
+				let r = r as f32 / 255.0;
+				let g = g as f32 / 255.0;
+				let b = b as f32 / 255.0;
+				Some(Self::new_rgb(r, g, b))
+			},
+			8 => {
+				let (r, hex) = hex.split_at(2);
+				let (g, hex) = hex.split_at(2);
+				let (b, a) = hex.split_at(2);
+				let Ok(r)= u8::from_str_radix(r, 16) else {
+					return None;
+				};
+				let Ok(g)= u8::from_str_radix(g, 16) else {
+					return None;
+				};
+				let Ok(b)= u8::from_str_radix(b, 16) else {
+					return None;
+				};
+				let Ok(a)= u8::from_str_radix(a, 16) else {
+					return None;
+				};
+				let r = r as f32 / 255.0;
+				let g = g as f32 / 255.0;
+				let b = b as f32 / 255.0;
+				let _ = a as f32 / 255.0;
+				Some(Self::new_rgb(r, g, b))
+			},
+			_ => None
+		}
+	}
+
 	pub fn get_rgb(self) -> Option<(f32, f32, f32)> {
 		match self {
 			Self::RGB { r, g, b } => Some((r, g, b)),
@@ -108,6 +193,21 @@ impl Color {
 			},
 			Self::OkLab { .. } => self,
 		}
+	}
+}
+
+#[cfg(test)]
+mod test {
+    use crate::color;
+
+	#[test]
+	fn test_base() {
+		let c = color::Color::from_hex_str("#000").expect("parse failed");
+		assert_eq!(c.get_rgb().unwrap(), (0.0, 0.0, 0.0));
+		let c = color::Color::from_hex_str("#fff0").expect("parse failed");
+		assert_eq!(c.get_rgb().unwrap(), (1.0, 1.0, 1.0));
+		let c = color::Color::from_hex_str("#ff00ff").expect("parse failed");
+		assert_eq!(c.get_rgb().unwrap(), (1.0, 0.0, 1.0));
 	}
 }
 
