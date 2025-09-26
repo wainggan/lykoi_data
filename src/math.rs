@@ -146,21 +146,217 @@ pub fn approach<T: Number>(x: T, y: T, amount: T) -> T {
 	}
 }
 
-pub const fn map(value: f64, start_low: f64, start_high: f64, target_low: f64, target_high: f64) -> f64 {
+pub fn map(value: f64, start_low: f64, start_high: f64, target_low: f64, target_high: f64) -> f64 {
     (value - start_low) / (start_high - start_low) * (target_high - target_low) + target_low
 }
 
-pub const fn lerp(x: f64, y: f64, t: f64) -> f64 {
+pub fn lerp(x: f64, y: f64, t: f64) -> f64 {
 	x + (y - x) * t.clamp(0.0, 1.0)
 }
 
-pub const fn hermite(t: f64) -> f64 {
+pub fn hermite(t: f64) -> f64 {
 	let t = t.clamp(0.0, 1.0);
 	t * t * (3.0 - 2.0 * t)
 }
 
-pub const fn herp(x: f64, y: f64, t: f64) -> f64 {
+pub fn herp(x: f64, y: f64, t: f64) -> f64 {
 	lerp(x, y, hermite(t))
+}
+
+pub enum Tween {
+	SineIn,
+	SineOut,
+	SineInOut,
+	QuadIn,
+	QuadOut,
+	QuadInOut,
+	CubicIn,
+	CubicOut,
+	CubicInOut,
+	QuartIn,
+	QuartOut,
+	QuartInOut,
+	QuintIn,
+	QuintOut,
+	QuintInOut,
+	ExpoIn,
+	ExpoOut,
+	ExpoInOut,
+	CircIn,
+	CircOut,
+	CircInOut,
+	BackIn,
+	BackOut,
+	BackInOut,
+	ElasticIn,
+	ElasticOut,
+	ElasticInOut,
+	BounceIn,
+	BounceOut,
+	BounceInOut,
+}
+
+pub fn tween(kind: Tween, t: f64) -> f64 {
+	use std::f64::consts::PI;
+	let t = t.clamp(0.0, 1.0);
+	// implementations borrowed from https://easings.net/
+	match kind {
+		Tween::SineIn =>
+			1.0 - (t * PI / 2.0).cos(),
+		Tween::SineOut =>
+			(t * PI / 2.0).sin(),
+		Tween::SineInOut =>
+			-((PI * t).cos() - 1.0) / 2.0,
+		Tween::QuadIn =>
+			t * t,
+		Tween::QuadOut =>
+			1.0 - (1.0 - t).powi(2),
+		Tween::QuadInOut =>
+			if t < 0.5 {
+				2.0 * t * t
+			} else {
+				1.0 - (-2.0 * t + 2.0).powi(2) / 2.0
+			},
+		Tween::CubicIn =>
+			t * t * t,
+		Tween::CubicOut =>
+			1.0 - (1.0 - t).powi(3),
+		Tween::CubicInOut =>
+			if t < 0.5 {
+				4.0 * t * t * t
+			} else {
+				1.0 - (-2.0 * t + 2.0).powi(3) / 2.0
+			},
+		Tween::QuartIn =>
+			t * t * t * t,
+		Tween::QuartOut =>
+			1.0 - (1.0 - t).powi(4),
+		Tween::QuartInOut =>
+			if t < 0.5 {
+				8.0 * t * t * t * t
+			} else {
+				1.0 - (-2.0 * t + 2.0).powi(4) / 2.0
+			},
+		Tween::QuintIn =>
+			t * t * t * t * t,
+		Tween::QuintOut =>
+			1.0 - (1.0 - t).powi(5),
+		Tween::QuintInOut =>
+			if t < 0.5 {
+				16.0 * t * t * t * t * t
+			} else {
+				1.0 - (-2.0 * t + 2.0).powi(5) / 2.0
+			},
+		Tween::ExpoIn =>
+			if t == 0.0 {
+				0.0
+			} else {
+				2.0f64.powf(10.0 * t - 10.0)
+			},
+		Tween::ExpoOut =>
+			if t == 1.0 {
+				1.0
+			} else {
+				1.0 - 2.0f64.powf(-10.0 * t)
+			},
+		Tween::ExpoInOut =>
+			if t == 0.0 {
+				0.0
+			} else if t == 1.0 {
+				1.0
+			} else if t < 0.5 {
+				2.0f64.powf(20.0 * t - 10.0) / 2.0
+			} else {
+				(2.0 - 2.0f64.powf(-20.0 * t + 10.0)) / 2.0
+			},
+		Tween::CircIn =>
+			1.0 - (1.0 - t * t).sqrt(),
+		Tween::CircOut =>
+			(1.0 - (t - 1.0).powi(2)).sqrt(),
+		Tween::CircInOut =>
+			if t < 0.5 {
+				(1.0 - (1.0 - (2.0 * t).powi(2))) / 2.0
+			} else {
+				((1.0 - (-2.0 * t + 2.0).powi(2)) + 1.0) / 2.0
+			},
+		Tween::BackIn => {
+			const C: f64 = 1.70158;
+			(C + 1.0) * t * t * t - C * t * t
+		},
+		Tween::BackOut => {
+			const C: f64 = 1.70158;
+			1.0 + (C + 1.0) * (t - 1.0).powi(3) + C * (t - 1.0).powi(2)
+		},
+		Tween::BackInOut => {
+			const C1: f64 = 1.70158;
+			const C2: f64 = C1 * 1.525;
+			if t < 0.5 {
+				(2.0 * t).powi(2) * ((C2 + 1.0) * 2.0 * t - C2) / 2.0
+			} else {
+				(2.0 * t - 2.0).powi(2) * ((C2 + 1.0) * (2.0 * t - 2.0) + C2) / 2.0
+			}
+		},
+		Tween::ElasticIn => {
+			const C: f64 = (2.0 * PI) / 3.0;
+			if t == 0.0 {
+				0.0
+			} else if t == 1.0 {
+				1.0
+			} else {
+				-(2.0f64.powf(10.0 * t - 10.0)) * ((t * 10.0 - 10.75) * C).sin()
+			}
+		},
+		Tween::ElasticOut => {
+			const C: f64 = (2.0 * PI) / 3.0;
+			if t == 0.0 {
+				0.0
+			} else if t == 1.0 {
+				1.0
+			} else {
+				2.0f64.powf(-10.0 * t) * ((t * 10.0 - 0.75) * C).sin() + 1.0
+			}
+		},
+		Tween::ElasticInOut => {
+			const C: f64 = (2.0 * PI) / 4.5;
+			if t == 0.0 {
+				0.0
+			} else if t == 1.0 {
+				1.0
+			} else if t < 0.5 {
+				-(2.0f64.powf(20.0 * t - 10.0) * ((20.0 * t - 11.125) * C).sin()) / 2.0
+			} else {
+				(2.0f64.powf(-20.0 * t + 10.0) * ((20.0 * t - 11.125) * C).sin()) / 2.0 + 1.0
+			}
+		},
+		Tween::BounceIn =>
+			1.0 - tween(Tween::BounceOut, 1.0 - t),
+		Tween::BounceOut => {
+			const N: f64 = 7.5625;
+			const D: f64 = 2.75;
+			if t < 1.0 / D {
+				N * t * t
+			} else if t < 2.0 / D {
+				let a = t - 1.5;
+				N * (a / D) * a + 0.75
+			} else if t < 2.5 / D {
+				let a = t - 2.25;
+				N * (a / D) * a + 0.9375
+			} else {
+				let a = t - 2.625;
+				N * (a / D) * t + 0.984375
+			}
+		},
+		Tween::BounceInOut =>
+			if t < 0.5 {
+				(1.0 - tween(Tween::BounceOut, 1.0 - 2.0 * t)) / 2.0
+			} else {
+				(1.0 + tween(Tween::BounceOut, 2.0 * t - 1.0)) / 2.0
+			},
+	}
+}
+
+pub fn terp(kind: Tween, x: f64, y: f64, t: f64) -> f64 {
+	lerp(x, y, tween(kind, t))
 }
 
 
