@@ -10,4 +10,6 @@ pub mod rng;
 pub mod math;
 #[cfg(feature = "color")]
 pub mod color;
+#[cfg(feature = "sod")]
+pub mod sod;
 

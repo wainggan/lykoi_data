@@ -8,12 +8,13 @@ repository = "https://github.com/wainggan/lykoi_data"
 license = "MIT"
 
 [features]
-default = ["dag", "point", "rng", "math", "color"]
+default = ["dag", "point", "rng", "math", "color", "sod"]
 point = []
 dag = []
 rng = []
 math = []
 color = []
+sod = []
 
 [dependencies]
 num-traits = "0.2.19"
