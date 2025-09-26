@@ -5,6 +5,7 @@ edition = "2024"
 authors = ["parchii"]
 description = "data"
 repository = "https://github.com/wainggan/lykoi_data"
+readme = "readme.md"
 license = "MIT"
 
 [features]

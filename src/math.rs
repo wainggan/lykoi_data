@@ -60,61 +60,79 @@ pub trait Number: Copy {
 macro_rules! impl_number {
 	($name:ident) => {
 		impl Number for $name {
+			#[inline]
 			fn add(self, other: Self) -> Self {
 				self + other
 			}
+			#[inline]
 			fn sub(self, other: Self) -> Self {
 				self - other
 			}
+			#[inline]
 			fn mul(self, other: Self) -> Self {
 				self * other
 			}
+			#[inline]
 			fn div(self, other: Self) -> Self {
 				self / other
 			}
 
+			#[inline]
 			fn eq(self, other: Self) -> bool {
 				self == other
 			}
+			#[inline]
 			fn lt(self, other: Self) -> bool {
 				self < other
 			}
 
+			#[inline]
 			fn to_u8(self) -> u8 {
 				self as u8
 			}
+			#[inline]
 			fn to_u16(self) -> u16 {
 				self as u16
 			}
+			#[inline]
 			fn to_u32(self) -> u32 {
 				self as u32
 			}
+			#[inline]
 			fn to_u64(self) -> u64 {
 				self as u64
 			}
+			#[inline]
 			fn to_u128(self) -> u128 {
 				self as u128
 			}
 
+			#[inline]
 			fn to_i8(self) -> i8 {
 				self as i8
 			}
+			#[inline]
 			fn to_i16(self) -> i16 {
 				self as i16
 			}
+			#[inline]
 			fn to_i32(self) -> i32 {
 				self as i32
 			}
+			#[inline]
 			fn to_i64(self) -> i64 {
 				self as i64
 			}
+			#[inline]
 			fn to_i128(self) -> i128 {
 				self as i128
 			}
 
+			#[inline]
 			fn to_f32(self) -> f32 {
 				self as f32
 			}
+			#[inline]
 			fn to_f64(self) -> f64 {
 				self as f64
 			}
@@ -137,7 +155,7 @@ impl_number!(u128);
 impl_number!(f32);
 impl_number!(f64);
 
-
+#[inline]
 pub fn approach<T: Number>(x: T, y: T, amount: T) -> T {
 	if x.lt(y) {
 		x.add(amount).min(y)
@@ -146,19 +164,23 @@ pub fn approach<T: Number>(x: T, y: T, amount: T) -> T {
 	}
 }
 
+#[inline]
 pub fn map(value: f64, start_low: f64, start_high: f64, target_low: f64, target_high: f64) -> f64 {
     (value - start_low) / (start_high - start_low) * (target_high - target_low) + target_low
 }
 
+#[inline]
 pub fn lerp(x: f64, y: f64, t: f64) -> f64 {
 	x + (y - x) * t.clamp(0.0, 1.0)
 }
 
+#[inline]
 pub fn hermite(t: f64) -> f64 {
 	let t = t.clamp(0.0, 1.0);
 	t * t * (3.0 - 2.0 * t)
 }
 
+#[inline]
 pub fn herp(x: f64, y: f64, t: f64) -> f64 {
 	lerp(x, y, hermite(t))
 }
@@ -196,6 +218,8 @@ pub enum Tween {
 	BounceInOut,
 }
 
+// ? how do you make sure this isn't a bad idea
+// #[inline]
 pub fn tween(kind: Tween, t: f64) -> f64 {
 	use std::f64::consts::PI;
 	let t = t.clamp(0.0, 1.0);
@@ -355,6 +379,7 @@ pub fn tween(kind: Tween, t: f64) -> f64 {
 	}
 }
 
+#[inline]
 pub fn terp(kind: Tween, x: f64, y: f64, t: f64) -> f64 {
 	lerp(x, y, tween(kind, t))
 }

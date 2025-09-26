@@ -16,6 +16,7 @@ pub enum Color {
 	},
 }
 impl Color {
+	#[inline]
 	pub fn new_rgb(r: f32, g: f32, b: f32) -> Self {
 		Self::RGB {
 			r,
@@ -23,6 +24,7 @@ impl Color {
 			b,
 		}
 	}
+	#[inline]
 	pub fn new_oklab(l: f32, a: f32, b: f32) -> Self {
 		Self::OkLab {
 			l,
@@ -116,18 +118,21 @@ impl Color {
 		}
 	}
 
+	#[inline]
 	pub fn get_rgb(self) -> Option<(f32, f32, f32)> {
 		match self {
 			Self::RGB { r, g, b } => Some((r, g, b)),
 			Self::OkLab { .. } => None,
 		}
 	}
+	#[inline]
 	pub fn borrow_rgb(&self) -> Option<(&f32, &f32, &f32)> {
 		match self {
 			Self::RGB { r, g, b } => Some((r, g, b)),
 			Self::OkLab { .. } => None,
 		}
 	}
+	#[inline]
 	pub fn borrow_mut_rgb(&mut self) -> Option<(&mut f32, &mut f32, &mut f32)> {
 		match self {
 			Self::RGB { r, g, b } => Some((r, g, b)),
@@ -135,18 +140,21 @@ impl Color {
 		}
 	}
 
+	#[inline]
 	pub fn get_oklab(self) -> Option<(f32, f32, f32)> {
 		match self {
 			Self::OkLab { l, a, b } => Some((l, a, b)),
 			Self::RGB { .. } => None,
 		}
 	}
+	#[inline]
 	pub fn borrow_oklab(&self) -> Option<(&f32, &f32, &f32)> {
 		match self {
 			Self::OkLab { l, a, b } => Some((l, a, b)),
 			Self::RGB { .. } => None,
 		}
 	}
+	#[inline]
 	pub fn borrow_mut_oklab(&mut self) -> Option<(&mut f32, &mut f32, &mut f32)> {
 		match self {
 			Self::OkLab { l, a, b } => Some((l, a, b)),
