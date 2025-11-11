@@ -6,10 +6,34 @@ this module exposes some psuedo-rng implementations.
 - [XorShift64]
 - [XorShift128p]
 - [FibLFSR16]
+
+```
+# use lykoi_data::rng::XorShift32;
+let mut rng = XorShift32::new(0);
+
+assert_eq!(rng.nextu(), 270369);
+assert_eq!(rng.nextu(), 67634689);
+
+assert_eq!(rng.nextf(), 0.6164041025602268);
+assert_eq!(rng.nextf(), 0.07161863499125899);
+
+assert_eq!(rng.range(8.0, 16.0) as u32, 12);
+assert_eq!(rng.range(8.0, 16.0) as u32, 9);
+```
 */
 
 /**
 [Wichmann-Hill](https://en.wikipedia.org/wiki/Wichmann%E2%80%93Hill) psuedo-rng.
+
+```
+# use lykoi_data::rng::WichHill;
+let mut rng = WichHill::new(0);
+
+assert_eq!(rng.next(), 0.1905942791341093);
+assert_eq!(rng.next(), 0.21332214064505495);
+assert_eq!(rng.next(), 0.8948422044484658);
+assert_eq!(rng.next(), 0.028670929064924966);
+```
 */
 #[derive(Debug, Clone)]
 pub struct WichHill {
@@ -32,7 +56,7 @@ impl WichHill {
 	#[inline]
 	pub const fn new(seed: u32) -> Self {
 		let mut rng = XorShift32::new(seed);
-		Self::new_raw(rng.nextu(), rng.nextu(), rng.nextu())
+		Self::new_raw(rng.nextu() % 30000, rng.nextu() % 30000, rng.nextu() % 30000)
 	}
 
 	#[inline]
@@ -54,13 +78,25 @@ impl WichHill {
 
 /**
 [32bit xorshift](https://en.wikipedia.org/wiki/Xorshift) psuedo-rng.
+
+```
+# use lykoi_data::rng::XorShift32;
+let mut rng = XorShift32::new(0);
+
+assert_eq!(rng.nextu(), 270369);
+assert_eq!(rng.nextu(), 67634689);
+assert_eq!(rng.nextu(), 2647435461);
+assert_eq!(rng.nextu(), 307599695);
+```
 */
 #[derive(Debug, Clone)]
 pub struct XorShift32(u32);
 impl XorShift32 {
 	#[inline]
 	pub const fn new(seed: u32) -> Self {
-		Self(seed)
+		Self(
+			if seed == 0 { 1 } else { seed }
+		)
 	}
 
 	#[inline]
@@ -86,13 +122,25 @@ impl XorShift32 {
 
 /**
 [64bit xorshift](https://en.wikipedia.org/wiki/Xorshift) psuedo-rng.
+
+```
+# use lykoi_data::rng::XorShift64;
+let mut rng = XorShift64::new(0);
+
+assert_eq!(rng.nextu(), 1082269761);
+assert_eq!(rng.nextu(), 1152992998833853505);
+assert_eq!(rng.nextu(), 11177516664432764457);
+assert_eq!(rng.nextu(), 17678023832001937445);
+```
 */
 #[derive(Debug, Clone)]
 pub struct XorShift64(u64);
 impl XorShift64 {
 	#[inline]
 	pub const fn new(seed: u64) -> Self {
-		Self(seed)
+		Self(
+			if seed == 0 { 1 } else { seed }
+		)
 	}
 
 	#[inline]
@@ -118,6 +166,16 @@ impl XorShift64 {
 
 /**
 [128bit non-linear xorshift](https://en.wikipedia.org/wiki/Xorshift#xorshift+) psuedo-rng. yields u64 values.
+
+```
+# use lykoi_data::rng::XorShift128p;
+let mut rng = XorShift128p::new(0);
+
+assert_eq!(rng.nextu(), 2350952794504575203);
+assert_eq!(rng.nextu(), 10647469811762407304);
+assert_eq!(rng.nextu(), 2296785643744461824);
+assert_eq!(rng.nextu(), 6600060142384134327);
+```
 */
 #[derive(Debug, Clone)]
 pub struct XorShift128p(u64, u64);
@@ -142,7 +200,7 @@ impl XorShift128p {
 		t ^= t >> 18;
 		t ^= s ^ (s >> 5);
 		self.1 = t;
-		t + s
+		t.wrapping_add(s)
 	}
 
 	#[inline]
@@ -164,7 +222,10 @@ pub struct FibLFSR16(u16, u16);
 impl FibLFSR16 {
 	#[inline]
 	pub const fn new_raw(seed0: u16, seed1: u16) -> Self {
-		Self(seed0, seed1)
+		Self(
+			if seed0 == 0 { 1 } else { seed0 },
+			seed1.wrapping_add(1),
+		)
 	}
 
 	#[inline]
@@ -175,7 +236,7 @@ impl FibLFSR16 {
 	
 	#[inline]
 	pub const fn nextu(&mut self) -> u16 {
-		self.0 = ((self.1 >> 0) ^ (self.1 >> 2) ^ (self.1 >> 3) ^ (self.1 >> 5)) & 1;
+		self.0 = ((self.1) ^ (self.1 >> 2) ^ (self.1 >> 3) ^ (self.1 >> 5)) & 1;
         self.1 = (self.1 >> 1) | (self.0 << 15);
 		self.1
 	}
@@ -190,6 +251,4 @@ impl FibLFSR16 {
 		x0 + self.nextf() * (x1 - x0)
 	}
 }
-
-
 

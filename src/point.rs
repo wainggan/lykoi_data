@@ -24,7 +24,9 @@ where T: Copy + Debug {
 	}
 	#[inline]
 	pub fn set(&mut self, index: usize, value: T) {
-		self.data.get_mut(index).map(|x| *x = value);
+		if let Some(x) = self.data.get_mut(index) {
+			*x = value;
+		}
 	}
 
 	#[inline]
@@ -43,7 +45,7 @@ where T: Copy + Debug {
 	#[inline]
 	pub fn unary(self, op: impl Fn(T) -> T) -> Self {
 		let mut iter = self.data.iter()
-			.map(|x| op(x.clone()));
+			.map(|x| op(*x));
 		let array: [T; N] = array::from_fn(|_| iter.next().unwrap());
 		Point::new(array)
 	}
@@ -51,7 +53,7 @@ where T: Copy + Debug {
 	pub fn binary(self, other: Point<T, N>, op: impl Fn(T, T) -> T) -> Self {
 		let mut iter = self.data.iter()
 			.zip(other.data.iter())
-			.map(|x| op(x.0.clone(), x.1.clone()));
+			.map(|x| op(*x.0, *x.1));
 		let array: [T; N] = array::from_fn(|_| iter.next().unwrap());
 		Point::new(array)
 	}
@@ -59,24 +61,25 @@ where T: Copy + Debug {
 
 impl<T, const N: usize> Point<T, N>
 where T: Copy + Debug + num_traits::Num {
+	// not pub as the ops traits expose these instead
 	#[inline]
-	pub fn add(self, other: Point<T, N>) -> Self {
+	fn add(self, other: Point<T, N>) -> Self {
 		self.binary(other, |x, y| x + y)
 	}
 	#[inline]
-	pub fn sub(self, other: Point<T, N>) -> Self {
+	fn sub(self, other: Point<T, N>) -> Self {
 		self.binary(other, |x, y| x - y)
 	}
 	#[inline]
-	pub fn mul(self, other: Point<T, N>) -> Self {
+	fn mul(self, other: Point<T, N>) -> Self {
 		self.binary(other, |x, y| x * y)
 	}
 	#[inline]
-	pub fn div(self, other: Point<T, N>) -> Self {
+	fn div(self, other: Point<T, N>) -> Self {
 		self.binary(other, |x, y| x / y)
 	}
 	#[inline]
-	pub fn rem(self, other: Point<T, N>) -> Self {
+	fn rem(self, other: Point<T, N>) -> Self {
 		self.binary(other, |x, y| x % y)
 	}
 
@@ -224,7 +227,7 @@ macro_rules! point {
 #[cfg(test)]
 mod test {
 	#[test]
-	fn test_build_0() {
+	fn test_main() {
 		let p0 = point![1, 2];
 		let p1 = point![2, 3];
 

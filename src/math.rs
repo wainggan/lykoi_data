@@ -390,7 +390,7 @@ mod test {
     use crate::math;
 
 	#[test]
-	fn test_math() {
+	fn test_main() {
 		assert_eq!(math::approach(10, 20, 2), 12);
 		assert_eq!(math::approach(10, 20, 12), 20);
 		assert_eq!(math::approach(20, 10, 12), 10);

@@ -14,6 +14,7 @@ pub struct Sod {
 	// cache
 	crit: Option<f64>,
 }
+
 impl Sod {
 	// f frequency
 	// z bounce
@@ -107,6 +108,12 @@ impl Sod {
 		    
 			self.x_vel += dt * x_accel;
 		}
+	}
+}
+
+impl Default for Sod {
+	fn default() -> Self {
+		Self::new()
 	}
 }
 

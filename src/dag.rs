@@ -53,6 +53,7 @@ such as for complex shader passes!
 */
 #[derive(Debug, Clone)]
 pub struct Dag<T> {
+	// todo: can we remove Vec?
 	points: Vec<T>,
 	edges: Vec<(usize, usize)>,
 }
@@ -147,7 +148,7 @@ impl<T: Clone> Dag<T> {
 		loop {
 		
 			for i in 0..self.edges.len() {
-				if counts[self.edges[i].1] == None {
+				if counts[self.edges[i].1].is_none() {
 					continue;
 				}
 				let Some(ref mut e) = counts[self.edges[i].0] else {
@@ -156,9 +157,8 @@ impl<T: Clone> Dag<T> {
 				*e += 1;
 			}
 
-			for i in 0..counts.len() {
-				let c = counts[i];
-				if c == Some(0) {
+			for (i, c) in counts.iter().enumerate() {
+				if c == &Some(0) {
 					queue.push(i);
 				}
 			}
@@ -187,6 +187,12 @@ impl<T: Clone> Dag<T> {
 		}
 
 		Ok(result.into_iter().map(|x| self.points[x].clone()).collect())
+	}
+}
+
+impl<T: Clone> Default for Dag<T> {
+	fn default() -> Self {
+		Self::new()
 	}
 }
 

@@ -1,5 +1,7 @@
 #![doc = include_str!("../readme.md")]
 
+#![allow(clippy::tabs_in_doc_comments)]
+
 #[cfg(feature = "dag")]
 pub mod dag;
 #[cfg(feature = "point")]
